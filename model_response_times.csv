@@ -1,0 +1,20 @@
+model,response_time_seconds
+deepseek/deepseek-chat-v3-0324:free,120.30
+deepseek/deepseek-r1:free,16.28
+deepseek/deepseek-r1:free,221.90 #
+nvidia/llama-3.1-nemotron-ultra-253b-v1:free,305.31 #
+agentica-org/deepcoder-14b-preview:free,32.41
+mistralai/mistral-small-3.1-24b-instruct:free,197.31 #
+agentica-org/deepcoder-14b-preview:free,48.70
+meta-llama/llama-4-maverick:free,9.87
+qwen/qwen-2.5-7b-instruct:free,1.56
+qwen/qwen-2.5-7b-instruct:free,31.23 #
+microsoft/phi-4-reasoning-plus:free,32.49
+microsoft/phi-4-reasoning-plus:free,119.04
+cognitivecomputations/dolphin3.0-mistral-24b:free,31.12
+cognitivecomputations/dolphin3.0-mistral-24b:free,5.60
+cognitivecomputations/dolphin3.0-mistral-24b:free,33.05
+open-r1/olympiccoder-32b:free,187.61
+thudm/glm-4-32b:free,83.64
+deepseek/deepseek-r1-distill-llama-70b:free,45.93
+qwen/qwen-2.5-7b-instruct:free,32.46 #

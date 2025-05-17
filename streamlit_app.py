@@ -1,56 +1,73 @@
 import streamlit as st
 from openai import OpenAI
+import os
+import time
+import csv
 
-# Show title and description.
-st.title("💬 Chatbot")
-st.write(
-    "This is a simple chatbot that uses OpenAI's GPT-3.5 model to generate responses. "
-    "To use this app, you need to provide an OpenAI API key, which you can get [here](https://platform.openai.com/account/api-keys). "
-    "You can also learn how to build this app step by step by [following our tutorial](https://docs.streamlit.io/develop/tutorials/llms/build-conversational-apps)."
+# Get the current working directory
+cwd = os.getcwd()
+st.title("📄 AI Software Manager")
+
+models = [
+    "deepseek/deepseek-r1:free",
+    "nvidia/llama-3.1-nemotron-ultra-253b-v1:free",
+    "mistralai/mistral-small-3.1-24b-instruct:free",
+    "qwen/qwen-2.5-7b-instruct:free",
+    "open-r1/olympiccoder-32b:free",
+    "thudm/glm-4-32b:free",
+    "deepseek/deepseek-r1-distill-llama-70b:free"
+]
+
+selected_models = st.multiselect("Choose models to compare:", models)
+
+system_instruction = (
+    "Modify the given Python code based on the user's instruction. Ensure that all necessary changes are made and provide appropriate comments on the modified lines. Return the entire modified code as plain text without any additional explanations or omissions."
 )
 
-# Ask user for their OpenAI API key via `st.text_input`.
-# Alternatively, you can store the API key in `./.streamlit/secrets.toml` and access it
-# via `st.secrets`, see https://docs.streamlit.io/develop/concepts/connections/secrets-management
-openai_api_key = st.text_input("OpenAI API Key", type="password")
-if not openai_api_key:
-    st.info("Please add your OpenAI API key to continue.", icon="🗝️")
-else:
+openai_api_key = "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"
+client = OpenAI(base_url="https://openrouter.ai/api/v1", api_key=openai_api_key)
 
-    # Create an OpenAI client.
-    client = OpenAI(api_key=openai_api_key)
+file_path = f"{cwd}/test.py"
+with open(file_path, "r") as file:
+    document = file.read()
 
-    # Create a session state variable to store the chat messages. This ensures that the
-    # messages persist across reruns.
-    if "messages" not in st.session_state:
-        st.session_state.messages = []
+with st.form(key='prompt_form', clear_on_submit=True):
+    prompt = st.text_input(
+        "What can I assist you with?",
+        placeholder="Change the font color to....",
+        disabled=not document,
+    )
+    submit_button = st.form_submit_button(label='Submit', use_container_width=True)
+    if submit_button:
+        messages = [
+            {
+                "role": "system",
+                "content": system_instruction
+            },
+            {
+                "role": "user",
+                "content": f"Original Code: {document} \n\n---\n\n User Request:{prompt}"
+            }
+        ]
 
-    # Display the existing chat messages via `st.chat_message`.
-    for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
-
-    # Create a chat input field to allow the user to enter a message. This will display
-    # automatically at the bottom of the page.
-    if prompt := st.chat_input("What is up?"):
-
-        # Store and display the current prompt.
-        st.session_state.messages.append({"role": "user", "content": prompt})
-        with st.chat_message("user"):
-            st.markdown(prompt)
-
-        # Generate a response using the OpenAI API.
-        stream = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": m["role"], "content": m["content"]}
-                for m in st.session_state.messages
-            ],
-            stream=True,
-        )
-
-        # Stream the response to the chat using `st.write_stream`, then store it in 
-        # session state.
-        with st.chat_message("assistant"):
-            response = st.write_stream(stream)
-        st.session_state.messages.append({"role": "assistant", "content": response})
+        csv_file = "model_response_times.csv"
+        file_exists = os.path.isfile(csv_file)
+        with open(csv_file, mode="a", newline="") as csvfile:
+            writer = csv.writer(csvfile)
+            if not file_exists:
+                writer.writerow(["model", "response_time_seconds"])
+            for model in selected_models:
+                start_time = time.time()
+                stream = client.chat.completions.create(
+                    model=model,
+                    messages=messages,
+                    stream=True,
+                )
+                # Collect the full response
+                response = "".join([chunk.choices[0].delta.content or "" for chunk in stream])
+                elapsed = time.time() - start_time
+                writer.writerow([model, f"{elapsed:.2f}"])
+                # Write the response to test2.py (overwrites for each model, last one remains)
+                with open(f"{cwd}/test2.py", "w") as test_file:
+                    test_file.write(response)
+        st.success("Response times and responses written to files.")

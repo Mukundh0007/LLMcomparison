@@ -18,3 +18,16 @@ open-r1/olympiccoder-32b:free,187.61
 thudm/glm-4-32b:free,83.64
 deepseek/deepseek-r1-distill-llama-70b:free,45.93
 qwen/qwen-2.5-7b-instruct:free,32.46 #
+thudm/glm-z1-9b:free,57.50
+thudm/glm-z1-9b:free,142.68 #
+
+thudm/glm-z1-32b:free,13.53
+deepseek/deepseek-r1-distill-qwen-32b:free,17.12
+deepseek/deepseek-r1-distill-qwen-32b:free,62.94 #
+thudm/glm-z1-32b:free,364.73
+thudm/glm-z1-32b:free,240.05 #
+open-r1/olympiccoder-32b:free,24.91
+open-r1/olympiccoder-32b:free,42.57
+open-r1/olympiccoder-32b:free,45.32
+open-r1/olympiccoder-32b:free,177.45
+nvidia/llama-3.1-nemotron-ultra-253b-v1:free,198.39

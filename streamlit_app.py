@@ -14,8 +14,10 @@ models = [
     "mistralai/mistral-small-3.1-24b-instruct:free",
     "qwen/qwen-2.5-7b-instruct:free",
     "open-r1/olympiccoder-32b:free",
-    "thudm/glm-4-32b:free",
-    "deepseek/deepseek-r1-distill-llama-70b:free"
+    "deepseek/deepseek-r1-distill-llama-70b:free",
+    "thudm/glm-z1-9b:free",
+    "thudm/glm-z1-32b:free",
+    "deepseek/deepseek-r1-distill-qwen-32b:free"
 ]
 
 selected_models = st.multiselect("Choose models to compare:", models)
@@ -24,7 +26,7 @@ system_instruction = (
     "Modify the given Python code based on the user's instruction. Ensure that all necessary changes are made and provide appropriate comments on the modified lines. Return the entire modified code as plain text without any additional explanations or omissions."
 )
 
-openai_api_key = "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"
+openai_api_key = "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"
 client = OpenAI(base_url="https://openrouter.ai/api/v1", api_key=openai_api_key)
 
 file_path = f"{cwd}/test.py"
